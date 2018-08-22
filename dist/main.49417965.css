@@ -1,3 +1,12 @@
+.btn {
+  background: #ccc;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 10px;
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+  outline: none;
+}
 body {
   background: #eee !important;
   background-image: url('bokeh.55482abe.jpg') !important;
@@ -54,7 +63,55 @@ div:not(.injected) h1 {
   padding: 10px;
   font-family: 'Montserrat', sans-serif;
   border: none;
+  outline: none;
 }
 .message-preview-container {
   background-color: white;
+}
+.message-preview-container .message-preview-header {
+  padding: 25px;
+  border-bottom: 1px solid #ddd;
+}
+.message-preview-container .message-preview-action {
+  background: #ccc;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 10px;
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+  outline: none;
+}
+.message-preview-container .message-preview-action.left {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid #888;
+}
+.message-preview-container .message-preview-action.right {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.message-preview-container .message-preview-action--active {
+  background-color: #aaa;
+}
+.message-preview-container .message-preview-close {
+  border-bottom: 1px solid #aaa;
+  padding: 10px;
+  text-align: right;
+}
+.message-preview-container .message-preview-label,
+.message-preview-container .message-preview-value {
+  font-size: 25px;
+}
+.message-preview-container .message-preview-value {
+  margin-left: 12.5px;
+}
+.message-preview-container .message-preview-value {
+  font-weight: 300;
+}
+.message-preview-container .message-preview-row {
+  display: flex;
+  margin-bottom: 12.5px;
+}
+.message-preview-container .message-preview-row:last-of-type {
+  margin-bottom: 25px;
 }

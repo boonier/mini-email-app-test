@@ -25223,8 +25223,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// import {data} from './data';
 
+var EMAILS_URL = 'https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails.json';
+var EMAIL_URLS = ['https://res.cloudinary.com/boonier/raw/upload/v1534936079/email-1.json', 'https://res.cloudinary.com/boonier/raw/upload/v1534936078/email-2.json', 'https://res.cloudinary.com/boonier/raw/upload/v1534936079/email-3.json'];
 
 var SimpleMessageApp = function (_React$Component) {
     _inherits(SimpleMessageApp, _React$Component);
@@ -25235,10 +25236,18 @@ var SimpleMessageApp = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (SimpleMessageApp.__proto__ || Object.getPrototypeOf(SimpleMessageApp)).call(this));
 
         _this.showPreviewHandler = function (id) {
-            _this.setState({
-                showMessagePreview: true,
-                previewId: id
+            (0, _functions.fetchData)(EMAIL_URLS[id - 1]).then(function (response) {
+                return response.json();
+            }).then(function (msg) {
+                return _this.setState({
+                    showMessagePreview: true,
+                    selectedMsg: msg
+                });
             });
+        };
+
+        _this.backToListHandler = function () {
+            _this.setState({ showMessagePreview: false });
         };
 
         _this.state = {
@@ -25252,13 +25261,11 @@ var SimpleMessageApp = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            (0, _functions.fetchData)('https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails_kkiqnq.json').then(function (response) {
+            (0, _functions.fetchData)(EMAILS_URL).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 return _this2.setState({ data: data });
             });
-
-            console.log(this.state);
         }
     }, {
         key: 'render',
@@ -25271,7 +25278,7 @@ var SimpleMessageApp = function (_React$Component) {
                 result = _react2.default.createElement(
                     _react.Fragment,
                     null,
-                    showMessagePreview ? _react2.default.createElement(MessagePreview, { id: this.state.previewId, data: data }) : _react2.default.createElement(MessageList, { showPreviewHandler: this.showPreviewHandler, data: data })
+                    showMessagePreview ? _react2.default.createElement(MessagePreview, { id: this.state.previewId, data: this.state.selectedMsg, closePreview: this.backToListHandler }) : _react2.default.createElement(MessageList, { showPreviewHandler: this.showPreviewHandler, data: data })
                 );
             } else {
                 result = null;
@@ -25307,101 +25314,123 @@ function MessageList(props) {
     );
 }
 
-console.log(_functions.createMarkup);
+function MessageListItem(props) {
+    var name = props.name,
+        subjects = props.subjects,
+        profileId = props.profileId;
 
-function MessagePreview(props) {
-    debugger;
-    var message = props.data.collection.items[props.id - 1];
+
     return _react2.default.createElement(
-        'div',
-        { className: 'message-preview-container' },
+        'li',
+        { className: 'message-item' },
         _react2.default.createElement(
             'div',
-            null,
-            _react2.default.createElement(
-                'div',
-                { className: 'message-preview-label' },
-                'Message name:'
-            ),
-            _react2.default.createElement(
-                'div',
-                { className: 'message-preview-name' },
-                message.name
-            )
+            { className: 'message-name' },
+            name
         ),
         _react2.default.createElement(
             'div',
-            null,
-            _react2.default.createElement(
-                'div',
-                { className: 'message-preview-label' },
-                'Subject line:'
-            ),
-            _react2.default.createElement(
-                'div',
-                { className: 'message-preview-subject' },
-                message.subjects[0]
-            )
+            { className: 'message-subjects' },
+            subjects
         ),
         _react2.default.createElement(
             'button',
-            { className: 'message-preview-action' },
-            'HTML'
-        ),
-        _react2.default.createElement(
-            'button',
-            { className: 'message-preview-action' },
-            'Plain text'
-        ),
-        _react2.default.createElement(
-            'div',
-            { className: 'message-preview-body' },
-            _react2.default.createElement('div', { className: 'injected', dangerouslySetInnerHTML: (0, _functions.createMarkup)(message.body.html) })
+            { className: 'message-action', onClick: props.showPreviewHandler.bind(this, profileId) },
+            'More'
         )
     );
 }
 
-var MessageListItem = function (_React$Component2) {
-    _inherits(MessageListItem, _React$Component2);
+var MessagePreview = function (_React$Component2) {
+    _inherits(MessagePreview, _React$Component2);
 
-    function MessageListItem(props) {
-        _classCallCheck(this, MessageListItem);
+    function MessagePreview(props) {
+        _classCallCheck(this, MessagePreview);
 
-        return _possibleConstructorReturn(this, (MessageListItem.__proto__ || Object.getPrototypeOf(MessageListItem)).call(this));
+        var _this3 = _possibleConstructorReturn(this, (MessagePreview.__proto__ || Object.getPrototypeOf(MessagePreview)).call(this));
+
+        _this3.messageTypeHandler = function (id) {
+            _this3.setState({
+                type: id
+            });
+        };
+
+        _this3.state = {
+            type: 'html'
+        };
+        return _this3;
     }
 
-    _createClass(MessageListItem, [{
+    _createClass(MessagePreview, [{
         key: 'render',
         value: function render() {
-            var _props = this.props,
-                name = _props.name,
-                subjects = _props.subjects,
-                profileId = _props.profileId;
 
+            var message = this.props.data;
 
             return _react2.default.createElement(
-                'li',
-                { className: 'message-item' },
+                'div',
+                { className: 'message-preview-container' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'message-name' },
-                    name
+                    { className: 'message-preview-close' },
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'message-preview-action', onClick: this.props.closePreview },
+                        'Back to list'
+                    )
                 ),
                 _react2.default.createElement(
                     'div',
-                    { className: 'message-subjects' },
-                    subjects
+                    { className: 'message-preview-header' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'message-preview-row' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'message-preview-label' },
+                            'Message name:'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'message-preview-value' },
+                            message.name
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'message-preview-row' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'message-preview-label' },
+                            'Subject line:'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'message-preview-value' },
+                            message.subjects[0]
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'message-preview-action left ' + (this.state.type === 'html' ? 'message-preview-action--active' : ''), onClick: this.messageTypeHandler.bind(this, 'html') },
+                        'HTML'
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'message-preview-action right ' + (this.state.type === 'text' ? 'message-preview-action--active' : ''), onClick: this.messageTypeHandler.bind(this, 'text') },
+                        'Plain text'
+                    )
                 ),
                 _react2.default.createElement(
-                    'button',
-                    { className: 'message-action', onClick: this.props.showPreviewHandler.bind(this, profileId) },
-                    'More'
+                    'div',
+                    { className: 'message-preview-body' },
+                    _react2.default.createElement('div', { className: 'injected', dangerouslySetInnerHTML: (0, _functions.createMarkup)(message.body[this.state.type]) })
                 )
             );
         }
     }]);
 
-    return MessageListItem;
+    return MessagePreview;
 }(_react2.default.Component);
 
 function App() {

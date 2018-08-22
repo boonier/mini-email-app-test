@@ -1,7 +1,12 @@
 import React, {Fragment} from 'react';
-// import {data} from './data';
 import {fetchData, createMarkup} from './functions';
 
+const EMAILS_URL = 'https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails.json';
+const EMAIL_URLS = [
+    'https://res.cloudinary.com/boonier/raw/upload/v1534936079/email-1.json',
+    'https://res.cloudinary.com/boonier/raw/upload/v1534936078/email-2.json',
+    'https://res.cloudinary.com/boonier/raw/upload/v1534936079/email-3.json'
+];
 
 class SimpleMessageApp extends React.Component {
     constructor(props) {
@@ -11,19 +16,23 @@ class SimpleMessageApp extends React.Component {
         };
     }
 
-    showPreviewHandler = (id) => {
-        this.setState({
-            showMessagePreview: true,
-            previewId: id
-        })
-    }
-
     componentDidMount() {
-        fetchData('https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails_kkiqnq.json')
+        fetchData(EMAILS_URL)
             .then(response => response.json())
             .then(data => this.setState({data: data}));
+    }
 
-        console.log(this.state);
+    showPreviewHandler = (id) => {
+        fetchData(EMAIL_URLS[id-1])
+            .then(response => response.json())
+            .then(msg => this.setState({
+                showMessagePreview: true,
+                selectedMsg: msg
+            }));        
+    }
+
+    backToListHandler = () => {
+        this.setState({showMessagePreview: false});
     }
 
     render() {
@@ -35,7 +44,7 @@ class SimpleMessageApp extends React.Component {
             result = (
                 <Fragment>
                     {showMessagePreview ? 
-                    <MessagePreview id={this.state.previewId} data={data} /> : 
+                    <MessagePreview id={this.state.previewId} data={this.state.selectedMsg} closePreview={this.backToListHandler} /> : 
                     <MessageList showPreviewHandler={this.showPreviewHandler} data={data} /> 
                     }
                 </Fragment>
@@ -43,7 +52,7 @@ class SimpleMessageApp extends React.Component {
         } else {
             result = null;
         }
-        return result;  
+        return result;
     }
 }
 
@@ -67,58 +76,74 @@ function MessageList(props) {
     ) 
 }
 
-console.log(createMarkup);
+function MessageListItem (props) {
+    const {name, subjects, profileId} = props;
 
-function MessagePreview(props) {
-    debugger
-    const message = props.data.collection.items[props.id-1];
     return (
-        <div className="message-preview-container">
-            <div>
-                <div className="message-preview-label">Message name:</div>
-                <div className="message-preview-name">{message.name}</div>
-            </div>
-            
-            <div>
-                <div className="message-preview-label">Subject line:</div>
-                <div className="message-preview-subject">{message.subjects[0]}</div>
-            </div>
+        <li className="message-item">
+            <div className="message-name">{name}</div>
+            <div className="message-subjects">{subjects}</div>
+            <button className="message-action" onClick={props.showPreviewHandler.bind(this, profileId)}>More</button>
+        </li>
 
-            <button className="message-preview-action">HTML</button>
-            <button className="message-preview-action">Plain text</button>
-
-            <div className="message-preview-body">
-                <div className="injected" dangerouslySetInnerHTML={createMarkup(message.body.html)}></div>
-            </div> 
-
-        </div>
     );
+    
 }
 
-class MessageListItem extends React.Component {
+class MessagePreview extends React.Component {
+
     constructor(props) {
         super();
+        this.state = {
+            type:'html'
+        };
     }
 
+    messageTypeHandler = (id) => {
+        this.setState({
+            type: id
+        })
+    }
+    
     render() {
-        const {name, subjects, profileId} = this.props;
-        
-        return (
-            <li className="message-item">
-                <div className="message-name">{name}</div>
-                <div className="message-subjects">{subjects}</div>
-                <button className="message-action" onClick={this.props.showPreviewHandler.bind(this, profileId)}>More</button>
-            </li>
 
+        const message = this.props.data;      
+
+        return (
+            <div className="message-preview-container">
+                <div className="message-preview-close">
+                    <button className="message-preview-action" onClick={this.props.closePreview}>Back to list</button>  
+                </div>
+                <div className="message-preview-header">
+                    <div className="message-preview-row">
+                        <div className="message-preview-label">Message name:</div>
+                        <div className="message-preview-value">{message.name}</div>
+                    </div>
+                    
+                    <div className="message-preview-row">
+                        <div className="message-preview-label">Subject line:</div>
+                        <div className="message-preview-value">{message.subjects[0]}</div>
+                    </div>
+
+                    <button className={'message-preview-action left ' + (this.state.type === 'html' ? 'message-preview-action--active': '')} onClick={this.messageTypeHandler.bind(this,'html')}>HTML</button>
+                    <button className={'message-preview-action right ' + (this.state.type === 'text' ? 'message-preview-action--active': '')} onClick={this.messageTypeHandler.bind(this,'text')}>Plain text</button>
+                </div> 
+                <div className="message-preview-body">
+                    <div className="injected" dangerouslySetInnerHTML={createMarkup(message.body[this.state.type])}></div>
+                </div> 
+
+            </div>
         );
     }
 }
+
+
 
 export default function App() {
     return (
         <div className="simple-message-app">
             <h1>Pure360 React Tech Test</h1>
-            <SimpleMessageApp  />
+            <SimpleMessageApp />
         </div>
     );
 }
