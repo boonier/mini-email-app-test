@@ -137,8 +137,6 @@ class MessagePreview extends React.Component {
     }
 }
 
-
-
 export default function App() {
     return (
         <div className="simple-message-app">
