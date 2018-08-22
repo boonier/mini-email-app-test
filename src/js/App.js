@@ -129,7 +129,7 @@ class MessagePreview extends React.Component {
                     <button className={'message-preview-action right ' + (this.state.type === 'text' ? 'message-preview-action--active': '')} onClick={this.messageTypeHandler.bind(this,'text')}>Plain text</button>
                 </div> 
                 <div className="message-preview-body">
-                    <div className="injected" dangerouslySetInnerHTML={createMarkup(message.body[this.state.type])}></div>
+                    <div className={"injected" + (this.state.type === 'text' ? ' plain': '')} dangerouslySetInnerHTML={createMarkup(message.body[this.state.type])}></div>
                 </div> 
 
             </div>
