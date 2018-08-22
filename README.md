@@ -1,3 +1,5 @@
 # mini-email-app-test
 
-yarn
+To install: `yarn start` or `npm start`
+
+To run tests: `yarn test` or `npm test`
