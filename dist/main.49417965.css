@@ -1,0 +1,60 @@
+body {
+  background: #eee !important;
+  background-image: url('bokeh.55482abe.jpg') !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+div:not(.injected) h1 {
+  font-size: 54px !important;
+  color: white !important;
+  font-family: 'Montserrat', sans-serif;
+}
+.simple-message-app {
+  width: 100%;
+  max-width: 960px;
+  margin: 100px auto 0;
+}
+.message-list {
+  list-style-type: none;
+  padding: 0;
+}
+.message-list .message-item {
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #000;
+  padding: 25px;
+  background-color: white;
+  display: flex;
+  align-items: flex-start;
+}
+.message-list .message-item:last-child {
+  border-bottom-width: 1px;
+}
+.message-list .message-item .message-name {
+  flex: 1;
+  font-size: 25px;
+}
+.message-list .message-item .message-subjects {
+  flex: 3;
+}
+.message-list .message-item .message-subject {
+  display: block;
+  margin-bottom: 15px;
+}
+.message-list .message-item .message-subject:last-child {
+  margin: 0;
+}
+.message-list .message-item .message-action {
+  flex: 1;
+  background: #ccc;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 10px;
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+}
+.message-preview-container {
+  background-color: white;
+}
