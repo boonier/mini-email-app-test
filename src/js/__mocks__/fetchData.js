@@ -13,12 +13,26 @@ const data = {
 };
 
 export default function fetchData(url) {
-    try {
-        if (typeof url !== 'string') return null;
-        const response = await fetch(data);
-        return response;
-    }
-    catch(err) {
-        console.log("fetching data errorrrr!", err);
-    }
+
+    if (typeof url !== 'string') return null;
+
+    return new Promise((resolve, reject) => {
+    	const result = data[url];
+    	resolve(result);
+    });
+
+
+    // const url = url;
+
+    // return new Promise((resolve, reject) => {
+    // 	process.nextTick(() => {
+    // 			users[userID] ? 
+    // 			resolve(users[userID]) : 
+    // 			reject({
+    // 				error: 'User with ' + userID + ' not found.',
+    // 			}),
+    // 		);
+    // 	}
+
+    // });
 }

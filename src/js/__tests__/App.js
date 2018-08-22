@@ -1,5 +1,5 @@
 import { createMarkup, fetchData} from '../functions';
-jest.mock('../__mocks__/fetchData');
+// jest.mock('../__mocks__/fetchData');
 
 describe('createMarkup', () => {
     it('should return an object', () => {
@@ -26,17 +26,12 @@ describe('createMarkup', () => {
 
 describe('fetchData', () => {
 
-    // test('it should only accept a string', async () => {
+    // test('getting data with async/await', async () => {
     //     expect.assertions(1);
-    //     const data = await fetchData('https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails.json');
+    //     const data = await fetchData('name');
     //     expect(data).toBeDefined();
-    // })
-    ;
-    test('it should only accept a string', async () => {
-        expect.assertions(1);
-        const input = 'https://res.cloudinary.com/boonier/raw/upload/v1534931425/emails.json';
-        await expect(fetchData(input)).resolves.toBeDefined();
-    });
+    //     // expect(data.name).toEqual('Name 1');
+    // });
 
     test('should not accept a number', async () => {
         expect.assertions(1);
